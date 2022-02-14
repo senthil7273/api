@@ -1,6 +1,6 @@
 import datetime
 
-class MetricsData(object):
+class MetricData(object):
 
     def time(days=0):
         now = datetime.datetime.now()
@@ -28,20 +28,30 @@ class MetricsData(object):
     }]
 
     valid_metrics = [{
-        "id":"100",
+        "id":"1000",
         "temperature": 20,
-        "humidity": 90,
+        "humidity": 60,
         "timestamp": time()
+        }, {
+            "id":"1000",
+            "temperature": 30,
+            "humidity": 70,
+            "timestamp": time()
+        }, {
+            "id":"1000",
+            "temperature": 10,
+            "humidity": 90,
+            "timestamp": time()
     }]
 
     valid_metric = {
-        "id":"100",
+        "id":"1001",
         "temperature": 20,
         "humidity": 90,
         "timestamp": time()
     }
 
-    unknown_sensor_metrics = {
+    unknown_sensor_metric ={
         "id":"5000",
         "temperature": 20,
         "humidity": 90,

@@ -14,6 +14,16 @@ class SensorData(object):
         "id":"83",
         "city": "galway",
         "country": "ireland"
+    },
+    {
+        "id":"1001",
+        "city": "galway",
+        "country": "ireland"
+    },
+     {
+        "id":"100",
+        "city": "galway",
+        "country": "ireland"
     }]
 
     duplicate_sensors = [{

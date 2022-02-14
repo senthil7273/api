@@ -86,8 +86,9 @@ class MetricManager(Resource):
                 return msg, 400
         print(payload)
         try:
-            self.processor.add(self.session, payload)
+            self.processor.add_by(self.session, payload)
         except Exception as exp:
+            print(exp.message)
             return {Message.MSG_FAILED: exp.message}, 400
         return Message.MSG_SUCCESS, 200
 

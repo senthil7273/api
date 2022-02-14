@@ -9,7 +9,7 @@ from sqlalchemy import Table, Column, String, MetaData
 from sqlalchemy import ForeignKey, Float, Integer, DATETIME, delete, update
 from sqlalchemy.orm import declarative_base, sessionmaker,Session, scoped_session
 import sqlalchemy as sa
-from sqlalchemy.sql import func 
+from sqlalchemy.sql import func , exists
 
 Base = declarative_base()
 
@@ -84,10 +84,37 @@ class DataProcessor:
             session.commit()
         except AlchemyException.IntegrityError as err:
             session.rollback()
-            raise Duplicate_Error()
+            raise DuplicateError()
         except Exception as exp:
             session.rollback()
-            raise Unkown_Error()
+            raise UnkownError()
+
+    def add_by(self, session, obj):
+        try:
+            if isinstance(obj, list):
+                session.add_all(obj)
+            else:
+                print("coming here 1")
+                record = session.query(Sensor).filter(obj.id == Sensor.id).first()
+                print("coming here 2")
+                
+                if record is not None:
+                    print("coming here 3")
+                    session.add(obj)
+                    session.commit()
+                else:
+                    print("coming here 4")        
+                    raise UnknownSensorError()
+        except AlchemyException.IntegrityError as err:
+            session.rollback()
+            raise DuplicateError()
+        except UnknownSensorError as exp:
+            print("coming here 5")
+            raise UnknownSensorError()
+        except Exception as exp:
+            print("coming here 6")
+            session.rollback()
+            raise UnkownError()
 
     def get_all(self, session, obj):
         records = session.query(obj).all()
@@ -95,6 +122,10 @@ class DataProcessor:
 
     def get_by_id(self, session, obj, id=None):
         record = session.query(obj).filter(obj.id == id).first()
+        return record
+
+    def get_by_id_all(self, session, obj, id=None):
+        record = session.query(obj).filter(obj.id == id).all()
         return record
 
     def get_average(self, session, obj):
@@ -132,8 +163,9 @@ class Message(object):
     MSG_INTEGRITY_ERROR = "duplicate sensor or missing k/v pairs"
     MSG_UNKOWN_ERROR = "Unknown error"
     MSG_NO_RECORD_FOUND = "no record found"
+    MSG_UNKOWN_SENSOR = "Unknown sensor found"
 
-class Duplicate_Error(Exception):
+class DuplicateError(Exception):
   
    def __init__(self):
       self.message = Message.MSG_INTEGRITY_ERROR
@@ -141,7 +173,7 @@ class Duplicate_Error(Exception):
    def __str__(self):
       return(repr(self.value))
 
-class Unkown_Error(Exception):
+class UnkownError(Exception):
   
    def __init__(self):
       self.message = Message.MSG_UNKOWN_ERROR
@@ -149,3 +181,10 @@ class Unkown_Error(Exception):
    def __str__(self):
       return(repr(self.value))
 
+class UnknownSensorError(Exception):
+  
+   def __init__(self):
+      self.message = Message.MSG_UNKOWN_SENSOR
+  
+   def __str__(self):
+      return(repr(self.value))
