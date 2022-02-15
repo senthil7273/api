@@ -67,15 +67,15 @@ Table "sensors" exists: True
 Here is the instructions to run unit tests.
 
 Make sure, the service is up & running before initiating unit tests.
-Then, run the following command to run initate unit tests.
+Then, run the following command to initate unit tests.
 
 ```bash
 \api\api\tests>pytest test_senson_manager_api.py test_metric_api.py test_sensor_api.py test_metrics_api.py
 ```
 
-Unit tests should be run in the given order above as the setup & tear down are not implemented yet.
+Unit tests should be run in the given order(test scripts) above as the setup & tear down is not yet implemented.
 
-To re-run all unit tests, 
+* To re-run all unit tests, 
     * stop the flask api service
     * clear the test.db file created in the local directory (/api/api/local.db)
     * service the api
