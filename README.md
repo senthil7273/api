@@ -73,6 +73,24 @@ Then, run the following command to initate unit tests.
 \api\api\tests>pytest test_senson_manager_api.py test_metric_api.py test_sensor_api.py test_metrics_api.py
 ```
 
+output:
+```bash
+collected 27 items
+
+test_senson_manager_api.py ........                                                                                                                             [ 29%]
+test_metric_api.py .......                                                                                                                                      [ 55%]
+test_sensor_api.py .....                                                                                                                                        [ 74%]
+test_metrics_api.py .......                                                                                                                                     [100%]
+
+========================================================================== warnings summary ==========================================================================
+..\..\..\..\..\Anaconda3\lib\site-packages\pyreadline\py3k_compat.py:8
+  C:\Users\91995\Anaconda3\lib\site-packages\pyreadline\py3k_compat.py:8: DeprecationWarning: Using or importing the ABCs from 'collections' instead of from 'collections.abc' is deprecated since Python 3.3, and in 3.9 it will stop working
+    return isinstance(x, collections.Callable)
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+=================================================================== 27 passed, 1 warning in 0.69s ====================================================================
+```
+
 Unit tests should be run in the given order(test scripts) above as the setup & tear down is not yet implemented.
 
 * To re-run all unit tests, 
