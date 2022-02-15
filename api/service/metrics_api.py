@@ -24,7 +24,7 @@ class ReportSchema(Schema):
             raise ValidationError("start_date must be lesser than end_date or current time.")
       
     @validates_schema
-    def validate_date(self, data, **kwargs):
+    def validate_date(self, data):
         if 'start_date' in data and 'end_date' in data:
             if data['start_date'] >= data['end_date']:
                     raise ValidationError("start_date must be lesser than end_date.")
@@ -36,16 +36,42 @@ class ReportSchema(Schema):
 
 
 class MetricManager(Resource):
+    '''
+        getting or deleting sensor's metrics data
+
+        http://127.0.0.1:5000/iot/api/v1.0/metrics
+            post - posts metric(s) to the db
+            get - retrives the metrics(average of all, from & to date) of sensors
+            delete: deletes all metrics data
+            put: This method is not needed
+    
+    '''
     
     metrics_schema = MetricSchema(many=True)
     metric_schema = MetricSchema()
     report_schema = ReportSchema()
 
     def __init__(self, session):
+        '''
+            session: it holds the conversion with the db for any CRUD operations
+            processor: performs basic CRUD operations  
+        '''
         self.session = session
         self.processor = DataProcessor()
 
     def get(self):
+        '''
+            retrives the metrics(average of all, from & to date) of sensors
+            {
+                "average": false,
+                "start_date": "{{fromTime}}"
+                "end_date": "{{endTime}}"
+            }
+
+            average: true - it returns the average(all sensors) of temperature & the humidity
+            average: false - it returns the metrics record(s) based on the timestamp(start_date, end_date)
+
+        '''
         data = request.get_json(force=True)
         try:
             payload = self.report_schema.load(data)
@@ -61,6 +87,9 @@ class MetricManager(Resource):
             return self.metrics_schema.dump(records)
            
     def delete(self):
+        '''
+            deletes all metrics, literally clears the table
+        '''
         count = self.processor.delete_all(self.session, Metric)
         if count <= 0:
             return {Message.MSG_FAILED: Message.MSG_NO_RECORD_FOUND}, 200
@@ -68,9 +97,19 @@ class MetricManager(Resource):
             return Message.MSG_SUCCESS, 200
 
     def put(self):
+        '''
+            this method is not needed
+        '''
         return {Message.MSG_FAILED:Message.MSG_NOT_REQUIRED}, 200
 
     def post(self):
+        '''
+            adds metric(s) to the db based on the sensor's id.
+
+            if unknown sensor is detected or unknown parameter is in the metric data, 
+            transaction will be declined with the error message.
+
+        '''
         data = request.get_json(force=True)
         if isinstance(data, list):
             try:
