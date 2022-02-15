@@ -4,10 +4,7 @@ import pytest
 import requests
 
 # eg http://127.0.0.1:5000/iot/api/v1.0/sensors/91/metrics
-
 url_metric = 'http://127.0.0.1:5000/iot/api/v1.0/sensors/?/metrics'
-
-
 
 def test_put_method():
     '''
@@ -90,7 +87,7 @@ def test_delete_known_metric():
 
 def test_post_invalid_sensor_metric():
     '''
-        Inserting metrics for the sensor 1000
+        Inserting metrics for the sensor 5000, which should be failed as its uknown sensor
     '''
     url = url_metric.replace("?", "5000")
     response = requests.post(url, json=MetricData.unknown_sensor_metric)

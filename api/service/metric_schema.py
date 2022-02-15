@@ -33,6 +33,6 @@ class MetricSchema(Schema):
             raise ValidationError("id value should be less than 10000")
 
     @validates("id")
-    def validate_timestamp(self, value):
+    def validate_id(self, value):
         if value >= 10000:
             raise ValidationError("id value should be less than 10000")

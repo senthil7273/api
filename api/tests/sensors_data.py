@@ -20,6 +20,11 @@ class SensorData(object):
         "city": "galway",
         "country": "ireland"
     },
+    {
+        "id":"1000",
+        "city": "galway",
+        "country": "ireland"
+    },
      {
         "id":"100",
         "city": "galway",

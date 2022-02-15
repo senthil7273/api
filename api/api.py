@@ -4,6 +4,7 @@ from service.metrics_api import MetricManager
 from service.sensor_api import SensorInspector
 from service.sensor_manager_api import SensorManager
 from service.sensor_metric_api import SensorMetric
+from service.average_api import AverageMetric
 from db.db_manager import DBManager, Debugger
 
 class App:
@@ -20,6 +21,7 @@ class App:
         self.api.add_resource(SensorManager, '/iot/api/v1.0/sensors', resource_class_kwargs={'session': session})
         self.api.add_resource(SensorInspector, '/iot/api/v1.0/sensors/<int:id>',  resource_class_kwargs={'session': session})
         self.api.add_resource(SensorMetric, '/iot/api/v1.0/sensors/<int:id>/metrics', resource_class_kwargs={'session': session})
+        self.api.add_resource(AverageMetric, '/iot/api/v1.0/sensors/<int:id>/average', resource_class_kwargs={'session': session})
         self.api.add_resource(MetricManager, '/iot/api/v1.0/metrics', resource_class_kwargs={'session': session})
         self.app.run(debug=True)
 

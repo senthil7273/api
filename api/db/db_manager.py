@@ -92,27 +92,27 @@ class DataProcessor:
     def add_by(self, session, obj):
         try:
             if isinstance(obj, list):
-                session.add_all(obj)
+                # this is to be optimized based on ORM relationships
+                for metric in obj:
+                    record = session.query(Sensor).filter(metric.id == Sensor.id).first()
+                    if record is not None:
+                        session.add(metric)
+                    else:
+                        raise UnknownSensorError()
+                    session.commit()
             else:
-                print("coming here 1")
                 record = session.query(Sensor).filter(obj.id == Sensor.id).first()
-                print("coming here 2")
-                
                 if record is not None:
-                    print("coming here 3")
                     session.add(obj)
                     session.commit()
                 else:
-                    print("coming here 4")        
                     raise UnknownSensorError()
         except AlchemyException.IntegrityError as err:
             session.rollback()
             raise DuplicateError()
         except UnknownSensorError as exp:
-            print("coming here 5")
             raise UnknownSensorError()
         except Exception as exp:
-            print("coming here 6")
             session.rollback()
             raise UnkownError()
 
@@ -127,6 +127,25 @@ class DataProcessor:
     def get_by_id_all(self, session, obj, id=None):
         record = session.query(obj).filter(obj.id == id).all()
         return record
+
+    def get_avg_by_id(self, session, obj, id=None):
+        # avg = session.query(obj.id == id,func.avg(obj.temperature).label('avg_temp'),\
+        # func.avg(obj.humidity).label('avg_humidity'))
+
+        # this has to replaced using sqlalchemy's query
+        records = session.query(obj).filter(obj.id == id).all()
+        temperature = 0
+        humidity = 0
+        if len(records) > 0:
+            for record in records:
+                if record.temperature != None:
+                    temperature += record.temperature
+                if record.humidity != None:
+                    humidity += record.humidity
+            temperature = temperature/len(records)
+            humidity = humidity/len(records)
+        result = {"avg_temperature":temperature, "avg_humidity":humidity, "id":id}
+        return result
 
     def get_average(self, session, obj):
         avg = session.query \

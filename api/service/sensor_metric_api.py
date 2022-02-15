@@ -41,10 +41,9 @@ class SensorMetric(Resource):
 
     def post(self, id):
         data = request.get_json(force=True)
-        print(data)
         if isinstance(data, list):
             try:
-                payload = self.metric_schema.load(data, many=True)
+                payload = self.metrics_schema.load(data, many=True)
             except ValidationError as err:
                 msg = {Message.MSG_FAILED: err.messages}
                 return msg, 400

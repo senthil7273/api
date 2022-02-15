@@ -50,14 +50,14 @@ def test_invalid_id_metrics():
   assert data["failed"]["0"]["id"]
 
 
-# def test_missing_timestamp():
-#   '''
-#   posting a metric data with an missing timestamp should be failed
-#   '''
-#   response = requests.post(url_metrics, json=MetricsData.timestamp_missing_metric)
-#   data = response.json()
-#   assert data["failed"]
-#   assert data["failed"] == "duplicate sensor or missing k/v pairs"
+def test_missing_timestamp():
+  '''
+  posting a metric data with an missing timestamp should be failed
+  '''
+  response = requests.post(url_metrics, json=MetricsData.timestamp_missing_metric)
+  data = response.json()
+  assert data["failed"]
+  assert data["failed"] == "duplicate sensor or missing k/v pairs"
 
 
 def test_post_valid_metrics():
